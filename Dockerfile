@@ -24,10 +24,6 @@ COPY --from=gobuild /go/src/github.com/meyskens/k8s-openresty-ingress-redis/cont
 
 COPY ./config/default/ /etc/nginx/
 
-COPY ./template/ingress.tpl /etc/nginx/ingress.tpl
-ENV OPENRESTY_TEMPLATEPATH=/etc/nginx/ingress.tpl
-ENV OPENRESTY_INGRESSATH=/etc/nginx/sites/
-
 EXPOSE 80
 EXPOSE 443
 CMD controller
