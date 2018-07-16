@@ -40,7 +40,7 @@ func GenerateDomainConfigValuesFromIngresses(ingresses []extensions_v1beta1.Ingr
 				}
 				values = append(values, ConfigValues{
 					Path: path.Path,
-					Host: service.Spec.ClusterIP + fmt.Sprintf("%d", path.Backend.ServicePort.IntVal),
+					Host: service.Spec.ClusterIP + fmt.Sprintf(":%d", path.Backend.ServicePort.IntVal),
 				})
 			}
 
