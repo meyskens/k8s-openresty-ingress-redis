@@ -20,7 +20,7 @@ RUN openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
        -keyout /etc/ssl/resty-auto-ssl-fallback.key \
        -out /etc/ssl/resty-auto-ssl-fallback.crt
 
-COPY --from=gobuild /go/src/github.com/meyskens/k8s-openresty-ingress/controller/controller /usr/local/bin/controller
+COPY --from=gobuild /go/src/github.com/meyskens/k8s-openresty-ingress-redis/controller/controller /usr/local/bin/controller
 
 COPY ./config/default/ /etc/nginx/
 
