@@ -43,7 +43,7 @@ func runReloadOnChange(client *connector.Client) {
 		time.Sleep(time.Second)
 		changesMutex.Lock()
 		if changes {
-			log.Println("Reloading entried into redis")
+			log.Println("Reloading entries into redis")
 			reload(client)
 			changes = false
 		}

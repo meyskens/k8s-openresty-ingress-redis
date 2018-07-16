@@ -34,6 +34,7 @@ func main() {
 	log.Println("Starting NGINX")
 	startNginx()
 
+	go runReloadOnChange(client)
 	watchChanges(client)
 }
 
@@ -71,6 +72,7 @@ func reload(client *connector.Client) error {
 
 	conf := configgenerate.GenerateDomainConfigValuesFromIngresses(ingress, services)
 	configgenerate.UpdateRedis(conf)
+	log.Println("Updated redis")
 
 	return nil
 }
