@@ -61,6 +61,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:1e5b1e14524ed08301977b7b8e10c719ed853cbf3f24ecb66fae783a46f207a6"
+  name = "github.com/google/btree"
+  packages = ["."]
+  pruneopts = ""
+  revision = "4030bb1f1f0c35b30ca7009e9ebd06849dd45306"
+
+[[projects]]
+  branch = "master"
   digest = "1:754f77e9c839b24778a4b64422236d38515301d2baeb63113aa3edc42e6af692"
   name = "github.com/google/gofuzz"
   packages = ["."]
@@ -78,6 +86,17 @@
   pruneopts = ""
   revision = "ee43cbb60db7bd22502942cccbc39059117352ab"
   version = "v0.1.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:009a1928b8c096338b68b5822d838a72b4d8520715c1463614476359f3282ec8"
+  name = "github.com/gregjones/httpcache"
+  packages = [
+    ".",
+    "diskcache",
+  ]
+  pruneopts = ""
+  revision = "9cad4c3443a7200dd6400aef47183728de563a38"
 
 [[projects]]
   branch = "master"
@@ -104,12 +123,12 @@
   version = "1.1.3"
 
 [[projects]]
-  digest = "1:7181cdc4dbf3e1125fb13bb2c3908a26a073440e6860c3f311df3f2d87a80ef5"
+  branch = "dependabot/dep/k8s.io/client-go-8.0.0"
+  digest = "1:10d60d478f3236765dcc43b31132492aeca4dddd1c6b90b87bb27535c8f92020"
   name = "github.com/meyskens/k8s-openresty-ingress"
   packages = ["controller/connector"]
   pruneopts = ""
-  revision = "a5e8dff1040c15a2469c6c8920c37c7011e4812f"
-  version = "v0.1.0"
+  revision = "ee2e0c7b65e4da05f1583eeaa087a0ee7c78d35e"
 
 [[projects]]
   digest = "1:0c0ff2a89c1bb0d01887e1dac043ad7efbf3ec77482ef058ac423d13497e16fd"
@@ -126,6 +145,22 @@
   pruneopts = ""
   revision = "1df9eeb2bb81f327b96228865c5687bc2194af3f"
   version = "1.0.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:c24598ffeadd2762552269271b3b1510df2d83ee6696c1e543a0ff653af494bc"
+  name = "github.com/petar/GoLLRB"
+  packages = ["llrb"]
+  pruneopts = ""
+  revision = "53be0d36a84c2a886ca057d34b6aa4468df9ccb4"
+
+[[projects]]
+  digest = "1:b46305723171710475f2dd37547edd57b67b9de9f2a6267cafdd98331fd6897f"
+  name = "github.com/peterbourgon/diskv"
+  packages = ["."]
+  pruneopts = ""
+  revision = "5f041e8faa004a95c88a202771f4cc3e991971e6"
+  version = "v2.0.1"
 
 [[projects]]
   digest = "1:8e243c568f36b09031ec18dff5f7d2769dcf5ca4d624ea511c8e3197dc3d352d"
@@ -217,7 +252,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:504c493e1288432749ace5d46f06694475ff650adf430a9ddcca6bdae6910871"
+  digest = "1:911f8355f11581ccef1d7a3cc8141bfe209ebf570ffc4574034044933cedce36"
   name = "k8s.io/api"
   packages = [
     "admissionregistration/v1alpha1",
@@ -244,13 +279,14 @@
     "rbac/v1alpha1",
     "rbac/v1beta1",
     "scheduling/v1alpha1",
+    "scheduling/v1beta1",
     "settings/v1alpha1",
     "storage/v1",
     "storage/v1alpha1",
     "storage/v1beta1",
   ]
   pruneopts = ""
-  revision = "6fb8575d8ac324ad9f9605dec64b7a4b8a632e79"
+  revision = "f456898a08e4bbc5891694118f3819f324de12ff"
 
 [[projects]]
   branch = "master"
@@ -298,7 +334,7 @@
   revision = "cbafd24d5796966031ae904aa88e2436a619ae8a"
 
 [[projects]]
-  digest = "1:071cc2f032b701b9dba26568e040940f26931a49e3a3985f3375f17f7f6d9c5f"
+  digest = "1:d04779a8de7d5465e0463bd986506348de5e89677c74777f695d3145a7a8d15e"
   name = "k8s.io/client-go"
   packages = [
     "discovery",
@@ -328,12 +364,14 @@
     "kubernetes/typed/rbac/v1alpha1",
     "kubernetes/typed/rbac/v1beta1",
     "kubernetes/typed/scheduling/v1alpha1",
+    "kubernetes/typed/scheduling/v1beta1",
     "kubernetes/typed/settings/v1alpha1",
     "kubernetes/typed/storage/v1",
     "kubernetes/typed/storage/v1alpha1",
     "kubernetes/typed/storage/v1beta1",
     "pkg/apis/clientauthentication",
     "pkg/apis/clientauthentication/v1alpha1",
+    "pkg/apis/clientauthentication/v1beta1",
     "pkg/version",
     "plugin/pkg/client/auth/exec",
     "rest",
@@ -347,13 +385,14 @@
     "tools/reference",
     "transport",
     "util/cert",
+    "util/connrotation",
     "util/flowcontrol",
     "util/homedir",
     "util/integer",
   ]
   pruneopts = ""
-  revision = "23781f4d6632d88e869066eaebb743857aa1ef9b"
-  version = "v7.0.0"
+  revision = "7d04d0e2a0a1a4d4a1cd6baa432a2301492e4e65"
+  version = "v8.0.0"
 
 [solve-meta]
   analyzer-name = "dep"
