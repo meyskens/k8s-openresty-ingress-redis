@@ -254,7 +254,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c4a1a585962341863994f38e614b990c55602f81ff6807eb042eae0ddf158b44"
+  digest = "1:67db4e456c3488c909059ca2b90d1d6c90f5e0ae1ccb9d72000053a27361e1b3"
   name = "k8s.io/apimachinery"
   packages = [
     "pkg/api/errors",
@@ -295,7 +295,7 @@
     "third_party/forked/golang/reflect",
   ]
   pruneopts = ""
-  revision = "cbafd24d5796966031ae904aa88e2436a619ae8a"
+  revision = "ed5594dcf47bc331577d2ffbcd24c4b1d20d9a6d"
 
 [[projects]]
   digest = "1:071cc2f032b701b9dba26568e040940f26931a49e3a3985f3375f17f7f6d9c5f"
