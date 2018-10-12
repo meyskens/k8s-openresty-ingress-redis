@@ -217,7 +217,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:504c493e1288432749ace5d46f06694475ff650adf430a9ddcca6bdae6910871"
+  digest = "1:92cf230d2ac919398fb7edd06458b8d918bf9727d558dd4c31d24b85e2227075"
   name = "k8s.io/api"
   packages = [
     "admissionregistration/v1alpha1",
@@ -250,7 +250,7 @@
     "storage/v1beta1",
   ]
   pruneopts = ""
-  revision = "6fb8575d8ac324ad9f9605dec64b7a4b8a632e79"
+  revision = "26c7a45db37856b19f05ba5aa21d2df4b81ecff3"
 
 [[projects]]
   branch = "master"
