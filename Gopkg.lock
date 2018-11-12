@@ -254,7 +254,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c4a1a585962341863994f38e614b990c55602f81ff6807eb042eae0ddf158b44"
+  digest = "1:cebe5f04ee0890c78c57a957e9d69892cebe60ccda4d1001d9f759a70b1e1bd1"
   name = "k8s.io/apimachinery"
   packages = [
     "pkg/api/errors",
@@ -295,7 +295,7 @@
     "third_party/forked/golang/reflect",
   ]
   pruneopts = ""
-  revision = "cbafd24d5796966031ae904aa88e2436a619ae8a"
+  revision = "2a7c9300402896b3c073f2f47df85527c94f83a0"
 
 [[projects]]
   digest = "1:071cc2f032b701b9dba26568e040940f26931a49e3a3985f3375f17f7f6d9c5f"
@@ -354,6 +354,22 @@
   pruneopts = ""
   revision = "23781f4d6632d88e869066eaebb743857aa1ef9b"
   version = "v7.0.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:33e0659135bcc9af7a24a4866f6e22ae22ee030dcf2ce71342149b773499f384"
+  name = "k8s.io/klog"
+  packages = ["."]
+  pruneopts = ""
+  revision = "8139d8cb77af419532b33dfa7dd09fbc5f1d344f"
+
+[[projects]]
+  digest = "1:321081b4a44256715f2b68411d8eda9a17f17ebfe6f0cc61d2cc52d11c08acfa"
+  name = "sigs.k8s.io/yaml"
+  packages = ["."]
+  pruneopts = ""
+  revision = "fd68e9863619f6ec2fdd8625fe1f02e7c877e480"
+  version = "v1.1.0"
 
 [solve-meta]
   analyzer-name = "dep"
