@@ -1,39 +1,67 @@
 package connector
 
 import (
+	"context"
 	"fmt"
-	"time"
+	"log"
 
-	core_v1 "k8s.io/api/core/v1"
-	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/informers"
+
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/client-go/tools/cache"
 )
 
-// GetServiceMap gives all services in a map to look them up in (namespace)-(service) format
-func (c *Client) GetServiceMap() (map[string]core_v1.Service, error) {
-	servicesList, err := c.clientset.CoreV1().Services("").List(meta_v1.ListOptions{})
-	if err != nil {
-		return nil, err
-	}
+func (c *Client) WatchServices(ctx context.Context) error {
+	c.ServicesChangeChan = make(chan struct{})
 
-	serviceMap := map[string]core_v1.Service{}
-	for _, service := range servicesList.Items {
-		serviceMap[fmt.Sprintf("%s-%s", service.GetObjectMeta().GetNamespace(), service.GetObjectMeta().GetName())] = service
-	}
+	i := informers.NewSharedInformerFactory(c.clientset, 0).Core().V1().Services().Informer()
+	i.AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc:    c.addService,
+		UpdateFunc: c.updateService,
+		DeleteFunc: c.deleteService,
+	})
+	go i.Run(ctx.Done())
 
-	return serviceMap, nil
+	return nil
 }
 
-// WatchServicesForChanges watches changes on services inside Kubernetes
-func (c *Client) WatchServicesForChanges() (chan bool, error) {
-	changeChan := make(chan bool)
+// GetServiceMap gives all services in a map to look them up in (namespace)-(service) format
+func (c *Client) GetServiceMap() map[string]*corev1.Service {
+	c.servicesMutex.RLock()
+	defer c.servicesMutex.RUnlock()
+	return c.services
+}
 
+func (c *Client) addService(obj interface{}) {
+	log.Println("Added service")
+
+	svc := obj.(*corev1.Service)
+	c.servicesMutex.Lock()
+	c.services[fmt.Sprintf("%s/%s", svc.GetNamespace(), svc.GetName())] = svc
+	c.servicesMutex.Unlock()
 	go func() {
-		for {
-			err := c.watcher(changeChan, c.clientset.CoreV1().Services(""))
-			fmt.Println(err)
-			time.Sleep(300 * time.Millisecond) // backoff
-		}
+		c.ServicesChangeChan <- struct{}{}
 	}()
+}
 
-	return changeChan, nil
+func (c *Client) updateService(oldObj interface{}, newObj interface{}) {
+	svc := newObj.(*corev1.Service)
+
+	c.servicesMutex.Lock()
+	c.services[fmt.Sprintf("%s/%s", svc.GetNamespace(), svc.GetName())] = svc
+	c.servicesMutex.Unlock()
+	go func() {
+		c.ServicesChangeChan <- struct{}{}
+	}()
+}
+
+func (c *Client) deleteService(obj interface{}) {
+	svc := obj.(*corev1.Service)
+
+	c.servicesMutex.Lock()
+	delete(c.services, fmt.Sprintf("%s/%s", svc.GetNamespace(), svc.GetName()))
+	c.servicesMutex.Unlock()
+	go func() {
+		c.ServicesChangeChan <- struct{}{}
+	}()
 }

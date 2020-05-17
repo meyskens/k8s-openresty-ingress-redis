@@ -19,16 +19,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	ingress, err := client.GetIngresses()
-	if err != nil {
-		panic(err)
-	}
-	services, err := client.GetServiceMap()
-	if err != nil {
-		panic(err)
-	}
+	ingress := client.GetIngresses()
+	services := client.GetServiceMap()
+	secrets := client.GetSecretMap()
 
-	conf := configgenerate.GenerateDomainConfigValuesFromIngresses(ingress, services)
+	conf := configgenerate.GenerateDomainConfigValuesFromIngresses(ingress, services, secrets)
 	configgenerate.UpdateRedis(conf)
 
 	log.Println("Starting NGINX")
@@ -61,16 +56,11 @@ func startNginx() *os.Process {
 }
 
 func reload(client *connector.Client) error {
-	ingress, err := client.GetIngresses()
-	if err != nil {
-		return err
-	}
-	services, err := client.GetServiceMap()
-	if err != nil {
-		return err
-	}
+	ingress := client.GetIngresses()
+	services := client.GetServiceMap()
+	secrets := client.GetSecretMap()
 
-	conf := configgenerate.GenerateDomainConfigValuesFromIngresses(ingress, services)
+	conf := configgenerate.GenerateDomainConfigValuesFromIngresses(ingress, services, secrets)
 	configgenerate.UpdateRedis(conf)
 	log.Println("Updated redis")
 
