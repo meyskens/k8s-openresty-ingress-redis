@@ -1,6 +1,6 @@
 ARG ARCH
 # Build go binary
-FROM golang AS gobuild
+FROM golang:1.14 AS gobuild
 
 COPY ./ /go/src/github.com/meyskens/k8s-openresty-ingress-redis
 WORKDIR /go/src/github.com/meyskens/k8s-openresty-ingress-redis/controller
@@ -12,7 +12,7 @@ RUN GOARCH=${GOARCH} GOARM=${GOARM} go build ./
 
 # Set up deinitive image
 ARG ARCH
-FROM maartje/openresty:${ARCH}-1.13.6.1
+FROM maartje/openresty:1.15.8.3
 
 # Add Dummy cert for dummy conf
 RUN openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
