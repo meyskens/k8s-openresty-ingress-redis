@@ -1,0 +1,28 @@
+name: Docker Image Publish
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm32v7, arm64v8]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+    - name: Get qemu-user-static
+      run: sudo apt-get update && sudo apt-get install -y qemu-user-static
+    - name: Configure Docker
+      run: |
+        echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+        sudo service docker restart
+        docker run --rm --privileged multiarch/qemu-user-static:register
+    - name: Build the Docker image
+      run: |
+        docker build . --build-arg="ARCH=$ARCH" --build-arg="QEMU_BIN=$QEMU_BIN" --file Dockerfile --tag $DOCKER_PREFIX:$ARCH-$VERSION
+      env:
+        ARCH: ${{ matrix.arch }}
+        VERSION: dev
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_PREFIX: maartje/k8s-openresty-ingress-redis

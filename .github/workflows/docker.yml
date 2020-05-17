@@ -1,0 +1,61 @@
+name: Docker Image Publish
+
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm32v7, arm64v8]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+    - name: Get qemu-user-static
+      run: sudo apt-get update && sudo apt-get install -y qemu-user-static
+    - name: Configure Docker
+      run: |
+        echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+        sudo service docker restart
+        docker run --rm --privileged multiarch/qemu-user-static:register
+    - name: Build the Docker image
+      run: |
+        docker build . --build-arg="ARCH=$ARCH" --build-arg="QEMU_BIN=$QEMU_BIN" --file Dockerfile --tag $DOCKER_PREFIX:$ARCH-$VERSION
+      env:
+        ARCH: ${{ matrix.arch }}
+        VERSION: ${{ steps.get_version.outputs.VERSION }}
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_PREFIX: maartje/k8s-openresty-ingress-redis
+    - name: Log in to registry
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "meyskens" --password-stdin
+    - name: Push image
+      run: docker push maartje/k8s-openresty-ingress-redis
+  publish-manifest:
+    runs-on: ubuntu-latest
+    needs: [build]
+    strategy:
+      matrix:
+        version: ["1.15.8.3"]
+    steps:
+      - name: Configure Docker
+        run: |
+          echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+          sudo service docker restart
+          docker run --rm --privileged multiarch/qemu-user-static:register
+      - name: Log in to registry
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "meyskens" --password-stdin
+      - name: Create Manifest 
+        run: |
+          docker manifest create $DOCKER_PREFIX:$VERSION $DOCKER_PREFIX:amd64-$VERSION $DOCKER_PREFIX:arm32v7-$VERSION $DOCKER_PREFIX:arm64v8-$VERSION
+          docker manifest annotate $DOCKER_PREFIX:$VERSION  $DOCKER_PREFIX:amd64-$VERSION --arch amd64
+          docker manifest annotate $DOCKER_PREFIX:$VERSION  $DOCKER_PREFIX:arm32v7-$VERSION --arch arm --variant v7
+          docker manifest annotate $DOCKER_PREFIX:$VERSION  $DOCKER_PREFIX:arm64v8-$VERSION --arch arm64 --variant armv8
+          docker manifest push $DOCKER_PREFIX:$VERSION
+        env:
+          VERSION: ${{ steps.get_version.outputs.VERSION }}
+          DOCKER_PREFIX: maartje/k8s-openresty-ingress-redis
+          DOCKER_CLI_EXPERIMENTAL: enabled
