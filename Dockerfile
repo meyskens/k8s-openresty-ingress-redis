@@ -12,7 +12,7 @@ RUN GOARCH=${GOARCH} GOARM=${GOARM} go build ./
 
 # Set up deinitive image
 ARG ARCH
-FROM maartje/openresty:amd64-1.17.8.1rc1
+FROM maartje/openresty:$ARCH-1.17.8.1rc1
 
 # Add Dummy cert for dummy conf
 RUN openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
