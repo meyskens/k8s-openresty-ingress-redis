@@ -26,7 +26,10 @@ jobs:
         docker run --rm --privileged multiarch/qemu-user-static:register
     - name: Build the Docker image
       run: |
-        docker build . --build-arg="ARCH=$ARCH" --build-arg="QEMU_BIN=$QEMU_BIN" --file Dockerfile --tag $DOCKER_PREFIX:$ARCH-$VERSION
+        if [[ "$ARCH" == "amd64" ]]; then export $GOARCH="amd64"; fi
+        if [[ "$ARCH" == "arm32v7" ]]; then export $GOARCH="arm"; fi
+        if [[ "$ARCH" == "arm64v8" ]]; then export $GOARCH="arm64"; fi
+        docker build . --build-arg="ARCH=$ARCH" --build-arg="GOARCH=$GOARCH" --file Dockerfile --tag $DOCKER_PREFIX:$ARCH-$VERSION
       env:
         ARCH: ${{ matrix.arch }}
         VERSION: dev

@@ -6,9 +6,7 @@ COPY ./ /go/src/github.com/meyskens/k8s-openresty-ingress-redis
 WORKDIR /go/src/github.com/meyskens/k8s-openresty-ingress-redis/controller
 
 ARG GOARCH
-ARG GOARM
-
-RUN GOARCH=${GOARCH} GOARM=${GOARM} go build ./
+RUN GOARCH=${GOARCH} GOARM=7 go build ./
 
 # Set up deinitive image
 ARG ARCH
