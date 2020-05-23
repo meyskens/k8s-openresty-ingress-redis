@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"sync"
 	"time"
@@ -12,24 +13,35 @@ var changes bool
 var changesMutex = sync.Mutex{}
 
 func watchChanges(client *connector.Client) {
-	ingressWatch, err := client.WatchIngressForChanges()
+	err := client.WatchIngress(context.Background())
 	if err != nil {
 		panic(err)
 	}
-	servicesWatch, err := client.WatchServicesForChanges()
+	err = client.WatchServices(context.Background())
 	if err != nil {
 		panic(err)
 	}
+	err = client.WatchSecrets(context.Background())
+	if err != nil {
+		panic(err)
+	}
+
 	for {
 		select {
-		case <-ingressWatch:
+		case <-client.IngressChangeChan:
 			log.Println("Ingress update: reloading config...")
 			changesMutex.Lock()
 			changes = true
 			changesMutex.Unlock()
 			break
-		case <-servicesWatch:
+		case <-client.ServicesChangeChan:
 			log.Println("Service update: reloading config...")
+			changesMutex.Lock()
+			changes = true
+			changesMutex.Unlock()
+			break
+		case <-client.SecretChangeChan:
+			log.Println("Secret update: reloading config...")
 			changesMutex.Lock()
 			changes = true
 			changesMutex.Unlock()
@@ -40,7 +52,6 @@ func watchChanges(client *connector.Client) {
 
 func runReloadOnChange(client *connector.Client) {
 	for {
-		time.Sleep(time.Second)
 		changesMutex.Lock()
 		if changes {
 			log.Println("Reloading entries into redis")
@@ -48,5 +59,6 @@ func runReloadOnChange(client *connector.Client) {
 			changes = false
 		}
 		changesMutex.Unlock()
+		time.Sleep(time.Second)
 	}
 }

@@ -3,16 +3,18 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: openresty-ingress-controller
-  namespace: kube-system
 ---
 kind: DaemonSet
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: openresty-ingress-controller
-  namespace: kube-system
   labels:
     k8s-app: openresty-ingress
 spec:
+  selector:
+    matchLabels:
+      k8s-app: openresty-ingress
+      name: openresty-ingress
   updateStrategy:
     type: RollingUpdate
   template:
@@ -22,16 +24,16 @@ spec:
         name: openresty-ingress
     spec:
       serviceAccountName: openresty-ingress-controller
-      hostNetwork: true
+      # hostNetwork: true
       restartPolicy: Always
       containers:
-      containers:
-      - image: redis
+      - image: redis:6
         name: redis
         ports:
         - name: redis
           containerPort: 6379
-      - image: docker.io/maartje/k8s-openresty-ingress-redis:arm64-v0.1.0
+      - image: maartje/k8s-openresty-ingress-redis:dev
+        imagePullPolicy: Always
         name: openresty-ingress
         ports:
         - name: http
@@ -62,7 +64,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: openresty-ingress-service
-  namespace: kube-system
 spec:
   selector:
     k8s-app: openresty-ingress
@@ -74,3 +75,20 @@ spec:
       port: 443
       name: https
   type: NodePort
+---
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: openresty-ingress-service-lb
+spec:
+  selector:
+    k8s-app: openresty-ingress
+  ports:
+    - protocol: TCP
+      port: 80
+      name: web
+    - protocol: TCP
+      port: 443
+      name: https
+  type: LoadBalancer

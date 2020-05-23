@@ -16,7 +16,7 @@ func UpdateRedis(in []DomainConfigValues) {
 	})
 
 	for _, domain := range in {
-		value, _ := json.Marshal(domain.Values)
+		value, _ := json.Marshal(domain)
 		err := client.Set(domain.Domain, value, 0).Err()
 		if err != nil {
 			fmt.Println(err)
