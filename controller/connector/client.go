@@ -16,7 +16,7 @@ type Client struct {
 
 	// IngressChangeChan is called when an ingress change is detected
 	IngressChangeChan chan struct{}
-	ingresses         []*v1beta1.Ingress
+	ingresses         map[string]*v1beta1.Ingress
 	ingressesMutex    sync.RWMutex
 
 	// ServicesChangeChan is called when a service change is detected
@@ -42,7 +42,7 @@ func NewClient() (*Client, error) {
 	}
 	client := Client{
 		clientset: clientset,
-		ingresses: []*v1beta1.Ingress{},
+		ingresses: map[string]*v1beta1.Ingress{},
 		services:  map[string]*core_v1.Service{},
 		secrets:   map[string]*core_v1.Secret{},
 	}

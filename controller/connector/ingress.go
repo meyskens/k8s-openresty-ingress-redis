@@ -2,6 +2,7 @@ package connector
 
 import (
 	"context"
+	"fmt"
 
 	"k8s.io/client-go/informers"
 
@@ -9,7 +10,7 @@ import (
 	"k8s.io/client-go/tools/cache"
 )
 
-func (c *Client) GetIngresses() []*networkingv1beta1.Ingress {
+func (c *Client) GetIngresses() map[string]*networkingv1beta1.Ingress {
 	c.ingressesMutex.RLock()
 	defer c.ingressesMutex.RUnlock()
 	return c.ingresses
@@ -30,8 +31,9 @@ func (c *Client) WatchIngress(ctx context.Context) error {
 }
 
 func (c *Client) addIngress(obj interface{}) {
+	ingress := obj.(*networkingv1beta1.Ingress)
 	c.ingressesMutex.Lock()
-	c.ingresses = append(c.ingresses, obj.(*networkingv1beta1.Ingress))
+	c.ingresses[fmt.Sprintf("%s/%s", ingress.GetNamespace(), ingress.GetName())] = ingress
 	c.ingressesMutex.Unlock()
 	go func() {
 		c.IngressChangeChan <- struct{}{}
@@ -39,9 +41,9 @@ func (c *Client) addIngress(obj interface{}) {
 }
 
 func (c *Client) updateIngress(oldObj interface{}, newObj interface{}) {
+	ingress := newObj.(*networkingv1beta1.Ingress)
 	c.ingressesMutex.Lock()
-	removeFrom(c.ingresses, oldObj.(*networkingv1beta1.Ingress))
-	c.ingresses = append(c.ingresses, newObj.(*networkingv1beta1.Ingress))
+	c.ingresses[fmt.Sprintf("%s/%s", ingress.GetNamespace(), ingress.GetName())] = ingress
 	c.ingressesMutex.Unlock()
 	go func() {
 		c.IngressChangeChan <- struct{}{}
@@ -49,8 +51,9 @@ func (c *Client) updateIngress(oldObj interface{}, newObj interface{}) {
 }
 
 func (c *Client) deleteIngress(obj interface{}) {
+	ingress := obj.(*networkingv1beta1.Ingress)
 	c.ingressesMutex.Lock()
-	removeFrom(c.ingresses, obj.(*networkingv1beta1.Ingress))
+	delete(c.ingresses, fmt.Sprintf("%s/%s", ingress.GetNamespace(), ingress.GetName()))
 	c.ingressesMutex.Unlock()
 	go func() {
 		c.IngressChangeChan <- struct{}{}

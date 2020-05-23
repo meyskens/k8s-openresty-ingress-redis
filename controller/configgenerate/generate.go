@@ -26,7 +26,7 @@ type ConfigValues struct {
 }
 
 // GenerateDomainConfigValuesFromIngresses gives back the DomainConfigValues for an ingress slice
-func GenerateDomainConfigValuesFromIngresses(ingresses []*networking_v1beta1.Ingress, serviceMap map[string]*core_v1.Service, secretMap map[string]*core_v1.Secret) []DomainConfigValues {
+func GenerateDomainConfigValuesFromIngresses(ingresses map[string]*networking_v1beta1.Ingress, serviceMap map[string]*core_v1.Service, secretMap map[string]*core_v1.Secret) []DomainConfigValues {
 	entries := []DomainConfigValues{}
 	for _, ingress := range ingresses {
 		if ingress == nil {
