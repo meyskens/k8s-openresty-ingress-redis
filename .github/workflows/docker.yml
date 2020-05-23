@@ -44,6 +44,10 @@ jobs:
       matrix:
         version: ["1.15.8.3"]
     steps:
+      - uses: actions/checkout@v1
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       - name: Configure Docker
         run: |
           echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
